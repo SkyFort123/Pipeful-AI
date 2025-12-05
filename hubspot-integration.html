@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HubSpot Integration | Pipeful AI</title>
+    <style>
+        /* --- RESET & VARIABLES --- */
+        :root {
+            --primary: #0f172a; /* Deep Navy */
+            --secondary: #334155; /* Slate */
+            --accent: #10b981; /* Success Green */
+            --accent-hover: #059669;
+            --light: #f8fafc;
+            --white: #ffffff;
+            --text-dark: #1e293b;
+            --text-light: #64748b;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            line-height: 1.6;
+            color: var(--text-dark);
+            background-color: var(--white);
+        }
+
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+
+        /* --- UTILITIES --- */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: var(--white);
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+            transform: translateY(-2px);
+        }
+
+        /* --- NAVIGATION --- */
+        header {
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .logo span { color: var(--accent); }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            font-weight: 500;
+            color: var(--secondary);
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover { color: var(--accent); }
+
+        /* --- PAGE CONTENT --- */
+        .page-hero {
+            padding: 160px 0 80px 0;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            text-align: center;
+        }
+
+        .page-hero h1 {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .page-hero p {
+            font-size: 1.25rem;
+            color: var(--text-light);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .content-section {
+            padding: 80px 0;
+        }
+
+        .content-section h2 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .content-section h3 {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .content-section p {
+            font-size: 1.1rem;
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .feature-card {
+            background: var(--light);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .feature-card h4 {
+            font-size: 1.25rem;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            font-size: 1rem;
+            margin-bottom: 0;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            background: var(--primary);
+            color: #94a3b8;
+            padding: 60px 0 20px 0;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-col h4 {
+            color: var(--white);
+            margin-bottom: 20px;
+        }
+
+        .footer-col ul li { margin-bottom: 10px; }
+        .footer-col ul li a:hover { color: var(--accent); }
+
+        .copyright {
+            text-align: center;
+            border-top: 1px solid #334155;
+            padding-top: 20px;
+            font-size: 0.9rem;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .feature-grid, .footer-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .page-hero h1 { font-size: 2rem; }
+            
+            nav .nav-links { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    Pipeful<span>AI</span>
+                </a>
+                <div class="nav-links">
+                    <a href="index.html#how-it-works">How it Works</a>
+                    <a href="index.html#interviewer">The Interviewer</a>
+                    <a href="index.html#testimonials">Reviews</a>
+                </div>
+                <a href="#" class="btn btn-primary">Join our Waitlist</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="page-hero">
+        <div class="container">
+            <h1>HubSpot Integration</h1>
+            <p>Connect Pipeful AI with your HubSpot account to update deals, log activities, and maintain a clean pipeline—all hands-free.</p>
+        </div>
+    </section>
+
+    <section class="content-section">
+        <div class="container">
+            <h2>Why HubSpot + Pipeful AI?</h2>
+            <p>HubSpot is your command center for inbound sales, but you shouldn't need to be at your computer to keep it updated. Pipeful AI integrates seamlessly with HubSpot, enabling you to manage deals, contacts, and activities through voice—whether you're commuting, walking, or multitasking.</p>
+
+            <h3>Key Features</h3>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h4>Deal Pipeline Management</h4>
+                    <p>Move deals through stages, update amounts, and set close dates—all through natural conversation.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Contact & Company Updates</h4>
+                    <p>Keep contact records and company information current with insights from your conversations.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Custom Properties</h4>
+                    <p>Pipeful adapts to your custom deal, contact, and company properties automatically.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Activity Tracking</h4>
+                    <p>Automatically log calls, emails, meetings, and notes with full context and timestamps.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Deal Stage Automation</h4>
+                    <p>Intelligently move deals through your pipeline based on conversation insights and methodology validation.</p>
+                </div>
+                <div class="feature-card">
+                    <h4>Secure OAuth Connection</h4>
+                    <p>Connect via HubSpot's OAuth 2.0. Your data stays secure and within your HubSpot account.</p>
+                </div>
+            </div>
+
+            <h3>How It Works</h3>
+            <p>Setting up Pipeful AI with HubSpot is quick and easy:</p>
+            <ol style="font-size: 1.1rem; color: var(--text-light); line-height: 2; margin-left: 20px;">
+                <li>Install the Pipeful AI Chrome extension</li>
+                <li>Navigate to your HubSpot account and click "Connect HubSpot"</li>
+                <li>Authorize Pipeful AI via HubSpot's secure OAuth flow</li>
+                <li>Configure which properties and pipelines you want to sync</li>
+                <li>Start adding deals to your interview queue</li>
+            </ol>
+
+            <h3>Supported HubSpot Objects</h3>
+            <p>Pipeful AI works with all core HubSpot objects:</p>
+            <ul style="font-size: 1.1rem; color: var(--text-light); line-height: 2; margin-left: 20px;">
+                <li>Deals (all pipelines)</li>
+                <li>Contacts</li>
+                <li>Companies</li>
+                <li>Activities (calls, emails, meetings, notes)</li>
+                <li>Custom objects (on request)</li>
+            </ul>
+
+            <div style="margin-top: 50px; text-align: center;">
+                <a href="#" class="btn btn-primary">Get Started with HubSpot</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <div class="logo" style="margin-bottom: 20px;">
+                        <span style="color: white;">Pipeful</span><span style="color: #10b981;">AI</span>
+                    </div>
+                    <p>The AI sales assistant that interviews you to keep your CRM pristine.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Product</h4>
+                    <ul>
+                        <li><a href="salesforce-integration.html">Salesforce Integration</a></li>
+                        <li><a href="hubspot-integration.html">HubSpot Integration</a></li>
+                        <li><a href="security.html">Security</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="about-us.html">About Us</a></li>
+                        <li><a href="careers.html">Careers</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="#">Twitter / X</a></li>
+                        <li><a href="#">LinkedIn</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2024 Pipeful AI. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
+
